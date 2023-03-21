@@ -19,6 +19,6 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT }}
           projectName: ${{ secrets.CLOUDFLARE_PAGES }}
-          ##directory: YOUR_ASSET_DIRECTORY
+          directory: dist
 
 
