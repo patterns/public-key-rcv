@@ -13,6 +13,8 @@ jobs:
 
       - name: Include dependencies
         run: npm i
+      - name: Server side render into ./pages dir
+        run: npm build
 
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1
