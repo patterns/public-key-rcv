@@ -13,7 +13,7 @@ const App = () => {
     const fetchData = async () => {
       const res = await $get({
         query: {
-          name: 'Pages',
+          name: 'Pages query-param-name-goes-here',
         },
       })
       const responseData = await res.json()
