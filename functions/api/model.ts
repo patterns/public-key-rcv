@@ -1,10 +1,10 @@
 declare global {
-  interface Crypto {
-    sha256(): string
+  interface SubtleCrypto {
+    digest(string, ArrayBuffer): ArrayBuffer
   }
 }
 
-export interface Key {
+export interface Verifier {
   id: string
   body: string
 }
@@ -14,22 +14,30 @@ export type Param = {
   body: string
 }
 
-const generateID = (loc: string) => {
-  return sha256(loc)
+const generateID = async (loc: string) => {
+  // accept, locator to the public key
+  // transform, locator input into hex string
+
+  const sum = await digest("SHA-256", loc)
+  const hexString = [...new Uint8Array(sum)]
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('')
+  return hexString
 }
 
-export const getKey = async (KV: KVNamespace, loc: string): Promise<Key | undefined> => {
-  const value = await KV.get(generateID(loc))
+export const getVerifier = async (KV: KVNamespace, loc: string): Promise<Key | undefined> => {
+  const internal_seq = generateID(loc)
+  const value = await KV.get(internal_seq)
   if (!value) return
-  const key: Key = JSON.parse(value)
-  return key
+  const verifier: Verifier = JSON.parse(value)
+  return verifier
 }
 
-export const createKey = async (KV: KVNamespace, param: Param): Promise<Key | undefined> => {
+export const createVerifier = async (KV: KVNamespace, param: Param): Promise<Verifier | undefined> => {
   if (!(param && param.locator && param.body)) return
-  const sum = generateID(param.locator)
-  const newKey: Key = { id: sum, body: param.body }
-  await KV.put(sum, JSON.stringify(newKey))
-  return newKey
+  const internal_seq = generateID(param.locator)
+  const newV: Verifier = { id: internal_seq, body: param.body }
+  await KV.put(internal_seq, JSON.stringify(newV))
+  return newV
 }
 
