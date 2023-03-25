@@ -10,10 +10,9 @@ type Bindings = {
 
 const app = new Hono<{ Bindings: Bindings }>()
 
-
-app.post('/verifiers', async (c) => {
+const route3 = app.post('/verifiers', async (c) => {
   const input = await c.req.json()
-  const loc = input('locator')
+  const loc = input.locator
   const verifier = await model.getVerifier(c.env.VERIFIER_KEYS, loc)
   if (!verifier) {
     // attempt to refresh local copy of verifier key
@@ -21,11 +20,11 @@ app.post('/verifiers', async (c) => {
     if (response.status == 200) {
         const param = new model.Param({ locator: loc, body: response.body })
         const fresh = await model.createVerifier(c.env.VERIFIER_KEYS, param)
-        return c.json({ verifier: fresh, ok: true })
+        return c.jsonT({ verifier: fresh, ok: true })
     }
     return c.json({ error: 'Not Found', ok: false }, 404)
   }
-  return c.json({ verifier: verifier, ok: true })
+  return c.jsonT({ verifier: verifier, ok: true })
 })
 
 
@@ -58,5 +57,6 @@ const route = app.get(
 
 export type AppType = typeof route
 export type AppType2 = typeof route2
+export type AppType3 = typeof route3
 
 export const onRequest = handle(app, '/api')
