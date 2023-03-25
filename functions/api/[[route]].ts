@@ -34,6 +34,7 @@ const route2 = app.get('/list', async (c) => {
   return c.jsonT({
       collection: seqnums,
   })
+}
 )
 
 const route = app.get(
