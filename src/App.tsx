@@ -19,6 +19,10 @@ const App = () => {
     fetchData()
   }, [])
 
+  if (!data.ok) {
+    return (<div><h1>KV Data</h1><h2>zero records</h2></div>)
+  }
+
   const sequenceNumbers = data.collection.map((seqnum) => (
     <SequenceNumber id={seqnum.name} />
     )

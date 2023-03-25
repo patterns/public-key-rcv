@@ -31,6 +31,9 @@ app.post('/verifiers', async (c) => {
 
 const route2 = app.get('/list', async (c) => {
   const seqnums = await model.listSequenceNumbers(c.env.VERIFIER_KEYS)
+  if (!seqnums) {
+    return c.json({ error: 'Not Found', ok: false }, 404)
+  }
   return c.jsonT({
       collection: seqnums,
   })
