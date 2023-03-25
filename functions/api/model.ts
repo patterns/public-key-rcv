@@ -25,7 +25,7 @@ const generateID = async (loc: string) => {
   return hexString
 }
 
-export const getVerifier = async (KV: KVNamespace, loc: string): Promise<Key | undefined> => {
+export const getVerifier = async (KV: KVNamespace, loc: string): Promise<Verifier | undefined> => {
   const internal_seq = generateID(loc)
   const value = await KV.get(internal_seq)
   if (!value) return
@@ -39,5 +39,11 @@ export const createVerifier = async (KV: KVNamespace, param: Param): Promise<Ver
   const newV: Verifier = { id: internal_seq, body: param.body }
   await KV.put(internal_seq, JSON.stringify(newV))
   return newV
+}
+
+export const listSequenceNumbers = async (KV: KVNamespace ): Promise<Array | undefined> => {
+  const value = await KV.list({ limit: 10 })
+  if (!value) return
+  return value.keys
 }
 
