@@ -29,6 +29,13 @@ app.post('/verifiers', async (c) => {
 })
 
 
+const route2 = app.get('/list', async (c) => {
+  const seqnums = await model.listSequenceNumbers(c.env.VERIFIER_KEYS)
+  return c.jsonT({
+      collection: seqnums,
+  })
+)
+
 const route = app.get(
   '/hello',
   zValidator(
@@ -46,5 +53,6 @@ const route = app.get(
 )
 
 export type AppType = typeof route
+export type AppType2 = typeof route2
 
 export const onRequest = handle(app, '/api')

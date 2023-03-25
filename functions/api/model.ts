@@ -41,3 +41,8 @@ export const createVerifier = async (KV: KVNamespace, param: Param): Promise<Ver
   return newV
 }
 
+export const listSequenceNumbers = async (KV: KVNamespace ): Promise<Array | undefined> => {
+  const value = await KV.list({ limit: 10 })
+  return value.keys
+}
+
