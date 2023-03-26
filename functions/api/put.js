@@ -28,7 +28,7 @@ export async function onRequestPost(context) {
     // TODO check whether we have a cached version first before making a trip
     // retrieve the public key (as specified by keyId)
     const response = await fetch(loc, {
-      headers: {'Content-Type': 'application/json;'},
+      headers: {'Accept': 'application/activity+json'},
       cf: {cacheTtl: 5, cacheEverything: true},
     });
     const results = await gatherResponse(response);
