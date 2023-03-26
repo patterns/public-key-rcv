@@ -2,6 +2,21 @@
  * POST /api/put
  */
 export async function onRequestPost(context) {
+
+  /**
+   * gatherResponse awaits and returns a response body as a string.
+   * Use await gatherResponse(..) in an async function to get the response body
+   * @param {Response} response
+   */
+  async function gatherResponse(response) {
+    const { headers } = response;
+    const contentType = headers.get("content-type") || "";
+    if (contentType.includes("application/json")) {
+        return JSON.stringify(await response.json());
+    }
+    return response.text();
+  }
+
   try {
     //TODO accept json data
     let input = await context.request.formData();
@@ -10,12 +25,22 @@ export async function onRequestPost(context) {
       return new Response('Missing locator input field', { status: 400 });
     }
 
+    // TODO check whether we have a cached version first before making a trip
+    // retrieve the public key (as specified by keyId)
+    const response = await fetch(loc, {
+      headers: {'Content-Type': 'application/json;'},
+      cf: {cacheTtl: 5, cacheEverything: true},
+    });
+    const results = await gatherResponse(response);
+
     // use the SHA256 sum as our internal sequence
     const enc = new TextEncoder().encode(loc);
     const sum = await crypto.subtle.digest({name: 'SHA-256'}, enc);
     const internal_seq = btoa(String.fromCharCode(...new Uint8Array(sum)));
     const KV = context.env.VERIFIER_KEYS;
-    await KV.put(internal_seq, loc, {expirationTtl: 3600});
+    await KV.put(internal_seq, results, {expirationTtl: 3600});
+
+    // return feedback to the consumer
     const output = { detail: "store done" };
     let pretty = JSON.stringify(output, null, 2);
     return new Response(pretty, {
