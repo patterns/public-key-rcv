@@ -1,15 +1,9 @@
-```
-npm install
-npm run dev
-```
+# verifier-key-rcv
 
-```
-open http://localhost:8788
-```
+Purpose, harvest the public key specified by `keyId`.
+ Cache the public key up to 48hr in CF KV namespace.
 
-```
-npm run deploy
-```
+
 
 ## Credits
 HTML [min/no JS](https://developers.cloudflare.com/pages/tutorials/forms/)
