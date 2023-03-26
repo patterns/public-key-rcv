@@ -11,10 +11,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Include dependencies
-        run: npm i
-      - name: Server side render into ./pages dir
-        run: npm run build
 
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1
@@ -22,6 +18,6 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT }}
           projectName: ${{ secrets.CLOUDFLARE_PAGES }}
-          directory: pages
+          directory: public
 
 
