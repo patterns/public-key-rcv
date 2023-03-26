@@ -11,7 +11,8 @@ export async function onRequestPost(context) {
     }
 
     // use the SHA256 sum as our internal sequence
-    const internal_seq = crypto.subtle.digest({name: 'SHA-256'}, loc);
+    const sum = await crypto.subtle.digest({name: 'SHA-256'}, loc);
+    let internal_seq = btoa(String.fromCharCode(...new Uint8Array(sum)));
     const KV = context.env.VERIFIER_KEYS;
     await KV.put(internal_seq, loc, {expirationTtl: 3600});
     let output = { detail: "store done" };
