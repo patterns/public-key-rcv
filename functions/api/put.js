@@ -21,10 +21,12 @@ export async function onRequestPost(context) {
     //TODO check for authorization
 
     let input = await context.request.json();
-    const destination = input.locator;
+    // TypeError exception is thrown on invalid URLs
+    const destination = new URL(input.locator);
     if (!destination) {
       return new Response('Missing locator input field', { status: 400 });
     }
+
 
     // TODO check whether we have a cached version first before making a trip
     // retrieve the public key (as specified by keyId)
