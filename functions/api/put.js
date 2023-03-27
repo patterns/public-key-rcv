@@ -18,23 +18,24 @@ export async function onRequestPost(context) {
   }
 
   try {
-    //TODO accept json data
-    let input = await context.request.formData();
-    const loc = input.get('locator');
-    if (!loc) {
+    //TODO check for authorization
+
+    let input = await context.request.json();
+    const destination = input.locator;
+    if (!destination) {
       return new Response('Missing locator input field', { status: 400 });
     }
 
     // TODO check whether we have a cached version first before making a trip
     // retrieve the public key (as specified by keyId)
-    const response = await fetch(loc, {
+    const response = await fetch(destination, {
       headers: {'Accept': 'application/activity+json'},
       cf: {cacheTtl: 5, cacheEverything: true},
     });
     const results = await gatherResponse(response);
 
     // use the SHA256 sum as our internal sequence
-    const enc = new TextEncoder().encode(loc);
+    const enc = new TextEncoder().encode(destination);
     const sum = await crypto.subtle.digest({name: 'SHA-256'}, enc);
     const internal_seq = btoa(String.fromCharCode(...new Uint8Array(sum)));
     const KV = context.env.VERIFIER_KEYS;
