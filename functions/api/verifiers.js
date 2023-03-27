@@ -21,26 +21,35 @@ export async function onRequestPost(context) {
     //TODO check for authorization
 
     let input = await context.request.json();
-    // TypeError exception is thrown on invalid URLs
-    const destination = new URL(input.locator);
-    if (!destination) {
+    if (!input.locator) {
       return new Response('Missing locator input field', { status: 400 });
     }
+    // TypeError exception is thrown on invalid URLs
+    const destination = new URL(input.locator);
 
+    // use the SHA256 sum as our internal sequence
+    const enc = new TextEncoder().encode(destination.href);
+    const sum = await crypto.subtle.digest({name: 'SHA-256'}, enc);
+    const internal_seq = btoa(String.fromCharCode(...new Uint8Array(sum)));
 
-    // TODO check whether we have a cached version first before making a trip
-    // retrieve the public key (as specified by keyId)
+    // prefer local copy and saving a trip
+    const KV = context.env.VERIFIER_KEYS;
+    const from_cache = await KV.get(internal_seq);
+    if (from_cache != null) {
+      // TODO short-circuit when wrong format from public key (save consumer grief)
+      return new Response(from_cache, {
+        headers:{'Content-Type': 'application/json;charset=utf-8'},
+      });
+    }
+
+    // retrieve a fresh version (as specified by keyId)
     const response = await fetch(destination, {
       headers: {'Accept': 'application/activity+json'},
       cf: {cacheTtl: 5, cacheEverything: true},
     });
     const results = await gatherResponse(response);
 
-    // use the SHA256 sum as our internal sequence
-    const enc = new TextEncoder().encode(destination);
-    const sum = await crypto.subtle.digest({name: 'SHA-256'}, enc);
-    const internal_seq = btoa(String.fromCharCode(...new Uint8Array(sum)));
-    const KV = context.env.VERIFIER_KEYS;
+    // keep a local copy of the public key
     await KV.put(internal_seq, results, {expirationTtl: 3600});
 
     // return feedback to the consumer
