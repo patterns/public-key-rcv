@@ -1,5 +1,5 @@
 /**
- * POST /api/put
+ * POST /api/verifiers
  */
 export async function onRequestPost(context) {
 
@@ -18,7 +18,12 @@ export async function onRequestPost(context) {
   }
 
   try {
-    //TODO check for authorization
+    //TODO refactor to use HMAC after e2e
+    const hdr_field = context.env.PRESHARED_AUTH_HEADER_KEY;
+    const psk = context.request.headers.get(hdr_field);
+    if (psk !== context.env.PRESHARED_AUTH_HEADER_VALUE) {
+      return new Response('Required auth value', { status: 403 });
+    }
 
     let input = await context.request.json();
     if (!input.locator) {
