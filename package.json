@@ -1,0 +1,25 @@
+{
+  "name": "verifier-key-rcv",
+  "version": "0.0.21",
+  "description": "can cloudflare act as a proxy to harvest public key used by pkcs1 verify?",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/patterns/verifier-key-rcv.git"
+  },
+  "keywords": [
+    "verifier"
+  ],
+  "author": "興怡",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/patterns/verifier-key-rcv/issues"
+  },
+  "homepage": "https://github.com/patterns/verifier-key-rcv#readme",
+  "dependencies": {
+    "@cloudflare/pages-plugin-honeycomb": "^1.0.2"
+  }
+}
