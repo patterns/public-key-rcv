@@ -16,5 +16,6 @@ Hono [pages-stack](https://github.com/honojs/examples/tree/main/pages-stack)
 
 D1 [worker in Hono](https://blog.cloudflare.com/making-static-sites-dynamic-with-cloudflare-d1/)
 
+Honeycomb [pages plugin](https://developers.cloudflare.com/pages/platform/functions/plugins/honeycomb/)
 
 
