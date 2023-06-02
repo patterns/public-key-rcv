@@ -57,10 +57,8 @@ export async function onRequestPost(context) {
     // keep a local copy of the public key
     await KV.put(internal_seq, results, {expirationTtl: 3600});
 
-    // return feedback to the consumer
-    const output = { detail: "store done" };
-    let pretty = JSON.stringify(output, null, 2);
-    return new Response(pretty, {
+    // pass back fresh (keyId) to the consumer
+    return new Response(results, {
       headers: {
         'Content-Type': 'application/json;charset=utf-8',
       },

@@ -1,6 +1,6 @@
 {
   "name": "verifier-key-rcv",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "can cloudflare act as a proxy to harvest public key used by pkcs1 verify?",
   "main": "index.js",
   "scripts": {
